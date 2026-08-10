@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>My Vault · Design Vault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0B;--elev:#141416;--elev-2:#1B1B1E;--media:#212124;--sunk:#0F0F11;
+  --line:rgba(255,255,255,.07);--line-2:rgba(255,255,255,.13);
+  --ink:#F4F4F5;--ink-2:#A1A1A6;--ink-3:#6B6B70;
+  --accent:#5B6CFF;--accent-soft:rgba(91,108,255,.16);--amber:#E0A03D;--danger:#FF6B6B;
+  --r-card:18px;--r-media:12px;--r-pill:999px;--r-chip:8px;
+  --ease:cubic-bezier(.22,1,.36,1);--bar:57px;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --pad:clamp(16px,2.6vw,34px);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  min-height:100vh;display:flex;flex-direction:column}
+.wrap{flex:1}
+a{color:inherit;text-decoration:none}
+button,input{font-family:inherit}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+*::-webkit-scrollbar-track{background:transparent}
+
+/* top bar (shared language with the archive) */
+.topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:0 var(--pad);min-height:var(--bar);background:rgba(10,10,11,.78);
+  backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:9px;padding:10px 0;flex:0 0 auto}
+.brand .mark{width:22px;height:22px;border-radius:6px;background:linear-gradient(140deg,var(--accent),#9A4BFF);
+  display:grid;place-items:center;font-weight:700;font-size:12px;color:#fff}
+.brand .nm{font-weight:600;font-size:14.5px;letter-spacing:-.015em;white-space:nowrap}
+@media(max-width:520px){.brand .nm{display:none}}
+.seg{display:inline-flex;padding:3px;gap:2px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:var(--r-pill)}
+.seg a{font-size:12.5px;font-weight:500;color:var(--ink-2);padding:5px 13px;border-radius:var(--r-pill);transition:.18s;white-space:nowrap}
+.seg a:hover{color:var(--ink)}
+.seg .on{background:var(--ink);color:#0A0A0B;font-weight:600}
+.who{font-family:var(--mono);font-size:11px;color:var(--ink-3);white-space:nowrap}
+.who b{color:var(--ink-2);font-weight:500}
+.barright{display:flex;align-items:center;gap:8px;margin-left:auto;padding:9px 0;flex-wrap:wrap}
+.tbtn{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:500;color:var(--ink-2);
+  padding:8px 13px;border-radius:var(--r-pill);border:1px solid var(--line);background:rgba(255,255,255,.05);
+  cursor:pointer;transition:.18s;white-space:nowrap}
+.tbtn:hover{color:var(--ink);background:var(--elev-2);border-color:var(--line-2)}
+.tbtn.on{background:var(--ink);color:#0A0A0B;border-color:var(--ink);font-weight:600}
+.tbtn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7}
+.sharebox{display:flex;gap:8px;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);
+  background:var(--elev);border:1px solid var(--line);padding:5px 6px 5px 12px;border-radius:var(--r-pill)}
+.sharebox input{border:0;background:transparent;font-family:var(--mono);font-size:11.5px;width:190px;color:var(--ink-2);outline:none}
+@media(max-width:640px){.sharebox input{width:120px}}
+
+.wrap{padding:0 var(--pad) 90px}
+
+/* gate */
+.gate{max-width:420px;margin:14vh auto;padding:28px;background:var(--elev);border:1px solid var(--line);border-radius:18px;
+  box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.gate h2{font-size:19px;font-weight:600;letter-spacing:-.02em;margin:0 0 7px}
+.gate p{color:var(--ink-3);font-size:13px;margin:0 0 22px;line-height:1.55}
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.field input{width:100%;font-size:14px;padding:11px 13px;border-radius:10px;border:1px solid var(--line-2);
+  background:var(--sunk);color:var(--ink);outline:none;transition:border-color .16s}
+.field input:focus{border-color:var(--accent)}
+.btn{width:100%;font-size:13.5px;font-weight:600;padding:12px;border-radius:10px;border:1px solid var(--ink);
+  background:var(--ink);color:#0A0A0B;cursor:pointer;transition:.16s}
+.btn:hover{background:#fff}
+.err{color:var(--danger);font-size:12.5px;margin-top:12px;display:none}
+
+/* dropzone */
+.dropzone{margin:22px 0 4px;padding:26px;border:1px dashed var(--line-2);border-radius:16px;text-align:center;
+  font-size:13px;color:var(--ink-3);cursor:pointer;transition:.18s;background:var(--sunk)}
+.dropzone:hover{border-color:var(--ink-3);color:var(--ink-2)}
+.dropzone.drag{border-color:var(--accent);color:#C3CAFF;background:var(--accent-soft)}
+.dropzone input{display:none}
+.dropzone b{display:block;color:var(--ink);font-weight:600;font-size:14px;margin-bottom:4px}
+
+.resbar{display:flex;justify-content:space-between;gap:14px;padding:22px 0 0;font-family:var(--mono);
+  font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.resbar b{color:var(--ink-2);font-weight:500}
+
+/* grid + card */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:30px 22px;padding-top:18px}
+@media(min-width:1560px){.grid{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}}
+.card{display:flex;flex-direction:column;gap:13px;animation:pop .34s var(--ease) both}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+.shotwrap{--p:16px;position:relative;padding:var(--p);background:var(--elev);border:1px solid var(--line);
+  border-radius:var(--r-card);cursor:pointer;transition:background .2s var(--ease),border-color .2s var(--ease),transform .2s var(--ease)}
+.card:hover .shotwrap{background:var(--elev-2);border-color:var(--line-2);transform:translateY(-2px)}
+.shot{position:relative;aspect-ratio:4/3;border-radius:var(--r-media);overflow:hidden;background:var(--media);
+  display:grid;place-items:center;box-shadow:0 10px 26px rgba(0,0,0,.4);transition:transform .3s var(--ease)}
+.card:hover .shot{transform:scale(1.015)}
+.shot img,.shot video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.badges{position:absolute;top:calc(var(--p) + 10px);left:calc(var(--p) + 10px);display:flex;gap:6px;z-index:2}
+.badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9.5px;padding:4px 7px;border-radius:var(--r-pill);
+  background:rgba(10,10,11,.72);color:#EDEDEF;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12)}
+.badge svg{width:9px;height:9px;fill:currentColor}
+.acts{position:absolute;top:calc(var(--p) + 10px);right:calc(var(--p) + 10px);display:flex;gap:6px;z-index:2;
+  opacity:0;transform:translateY(-4px);transition:opacity .2s var(--ease),transform .2s var(--ease)}
+.card:hover .acts,.card:focus-within .acts{opacity:1;transform:none}
+.act{width:29px;height:29px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(255,255,255,.14);
+  background:rgba(10,10,11,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#EDEDEF;cursor:pointer;transition:.16s}
+.act:hover{background:#F4F4F5;color:#0A0A0B;border-color:#F4F4F5}
+.act.danger:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+.act svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.9}
+.meta{display:flex;gap:11px;align-items:flex-start;padding:0 3px}
+.kindchip{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--elev-2);
+  border:1px solid var(--line);color:var(--ink-2)}
+.kindchip svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7}
+.mtxt{min-width:0;flex:1}
+.mttl{font-size:14px;font-weight:600;letter-spacing:-.01em;line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.msub{font-size:12px;color:var(--ink-3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msub .dot{opacity:.5;margin:0 5px}
+.mtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.mtags span{font-family:var(--mono);font-size:10px;padding:3px 7px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--ink-3)}
+.ttl-in{width:100%;font-size:13.5px;font-weight:600;color:var(--ink);padding:7px 9px;border-radius:var(--r-chip);
+  border:1px solid var(--accent);background:var(--sunk);outline:none;margin-bottom:5px}
+.tags-in{width:100%;font-family:var(--mono);font-size:11px;color:var(--ink-2);padding:7px 9px;border-radius:var(--r-chip);
+  border:1px solid var(--line-2);background:var(--sunk);outline:none}
+
+.empty{padding:80px 20px;text-align:center;color:var(--ink-3)}
+.empty h3{font-size:17px;font-weight:600;color:var(--ink);margin:0 0 7px}
+.empty p{font-size:13px;margin:0}
+
+/* detail overlay */
+.ov{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:clamp(12px,3vw,44px);background:rgba(6,6,7,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  opacity:0;visibility:hidden;transition:opacity .22s var(--ease),visibility .22s}
+.ov.show{opacity:1;visibility:visible}
+.ov-card{position:relative;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(290px,.8fr);width:min(1080px,100%);
+  max-height:100%;background:var(--elev);border:1px solid var(--line-2);border-radius:18px;overflow:hidden;
+  box-shadow:0 40px 90px rgba(0,0,0,.65);transform:scale(.97) translateY(8px);transition:transform .24s var(--ease)}
+.ov.show .ov-card{transform:none}
+.ov-media{position:relative;background:var(--sunk);display:grid;place-items:center;min-height:220px;overflow:hidden}
+.ov-media img,.ov-media video{width:100%;height:100%;max-height:80vh;object-fit:contain;display:block}
+.ov-side{display:flex;flex-direction:column;padding:24px;overflow-y:auto;border-left:1px solid var(--line)}
+.ov-kind{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-2);margin-bottom:12px}
+.ov-side h2{font-size:21px;font-weight:600;letter-spacing:-.025em;line-height:1.25;margin:0 0 12px;word-break:break-word}
+.ov-rows{display:flex;flex-direction:column;gap:1px;margin:4px 0 18px;background:var(--line);border-radius:10px;overflow:hidden}
+.ov-rows>div{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;background:var(--sunk);font-size:12.5px}
+.ov-rows span{color:var(--ink-3)}
+.ov-rows b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
+.ov-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.ov-tags span{font-family:var(--mono);font-size:11px;padding:5px 9px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--ink-2)}
+.ov-acts{display:flex;gap:9px;margin-top:auto;padding-top:8px}
+.obtn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:13px;font-weight:600;
+  padding:11px 14px;border-radius:10px;border:1px solid var(--line-2);background:none;color:var(--ink);cursor:pointer;transition:.16s}
+.obtn:hover{background:rgba(255,255,255,.06)}
+.obtn.primary{background:var(--ink);color:#0A0A0B;border-color:var(--ink)}
+.obtn.primary:hover{background:#fff}
+.ov-count{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ink-3);margin-top:14px;text-align:center}
+.ov-nav{position:relative;z-index:2;flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--line-2);background:rgba(20,20,22,.9);color:var(--ink-2);cursor:pointer;transition:.16s}
+.ov-nav:hover{background:var(--ink);color:#0A0A0B;border-color:var(--ink)}
+.ov-nav svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2}
+.ov-close{position:absolute;top:16px;right:18px;z-index:3;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--line-2);background:rgba(20,20,22,.9);color:var(--ink-2);font-size:15px;cursor:pointer}
+.ov-close:hover{background:var(--ink);color:#0A0A0B}
+@media(max-width:880px){
+  .ov{padding:0}
+  .ov-card{grid-template-columns:1fr;grid-template-rows:auto 1fr;width:100%;height:100%;max-height:100%;border-radius:0;border:0;overflow-y:auto}
+  .ov-media,.ov-media img,.ov-media video{max-height:46vh}
+  .ov-side{border-left:0;border-top:1px solid var(--line)}
+  .ov-nav{position:fixed;bottom:18px}
+  .ov-nav.prev{left:18px}.ov-nav.next{right:18px}
+}
+
+.toast{position:fixed;bottom:26px;left:50%;z-index:200;transform:translateX(-50%) translateY(14px);
+  background:#F4F4F5;color:#0A0A0B;font-size:12.5px;font-weight:500;padding:11px 18px;border-radius:var(--r-pill);
+  box-shadow:0 12px 34px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.22s var(--ease)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.foot{border-top:1px solid var(--line);padding:22px var(--pad) 34px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.06em;color:var(--ink-3);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media(max-width:720px){
+  .card .acts{opacity:1;transform:none}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:26px 16px}
+  .shotwrap{--p:12px;border-radius:15px}
+  .foot{flex-direction:column;gap:8px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="mark">D</span><span class="nm">Design Vault</span></div>
+  <nav class="seg">
+    <a href="index.html">Explore</a>
+    <a class="on" href="personal.html">Mine</a>
+  </nav>
+  <span class="who" id="whoBar" style="display:none">@<b id="whoHandle"></b> <span id="whoMode"></span></span>
+  <div class="barright" id="topControls" style="display:none">
+    <div class="sharebox" id="shareBox" style="display:none">
+      <span>Share</span><input id="shareUrl" readonly>
+      <button class="tbtn" id="copyShare" style="padding:5px 11px">Copy</button>
+    </div>
+    <button class="tbtn" id="visBtn"></button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="gate" class="gate">
+    <h2>Enter your vault</h2>
+    <p>Pick a handle and a passcode. First time using this handle creates it; returning just needs the same passcode.</p>
+    <div class="field"><label>Handle</label><input id="gHandle" placeholder="e.g. mehul" autocomplete="off"></div>
+    <div class="field"><label>Passcode</label><input id="gPasscode" type="password" placeholder="your personal passcode"></div>
+    <button class="btn" id="gEnter">Enter / Create</button>
+    <div class="err" id="gErr"></div>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="dropzone" id="dropzone" style="display:none">
+      <b>Drop images or videos here</b>
+      or click to choose files · max 50MB each
+      <input type="file" id="fileInput" multiple accept="image/*,video/*">
+    </div>
+    <div class="resbar"><span></span><span id="modeMeta"></span></div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="emptyMsg" style="display:none"><h3>Nothing here yet</h3><p>Drop a screen or a video above to start your vault.</p></div>
+  </div>
+</div>
+
+<footer class="foot">
+  <span>Design Vault · your own screens &amp; videos</span>
+  <span>←/→ to browse · Esc to close</span>
+</footer>
+
+<div class="ov" id="ov" aria-hidden="true">
+  <button class="ov-nav prev" id="ovPrev" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></svg></button>
+  <div class="ov-card" role="dialog" aria-modal="true" aria-label="Item detail">
+    <button class="ov-close" id="ovClose" aria-label="Close">✕</button>
+    <div class="ov-media" id="ovMedia"></div>
+    <aside class="ov-side">
+      <span class="ov-kind" id="ovKind"></span>
+      <h2 id="ovTitle"></h2>
+      <div class="ov-rows">
+        <div><span>Type</span><b id="ovType"></b></div>
+        <div><span>Added</span><b id="ovDate"></b></div>
+        <div><span>Vault</span><b id="ovRepo"></b></div>
+      </div>
+      <div class="ov-tags" id="ovTags"></div>
+      <div class="ov-acts">
+        <a class="obtn primary" id="ovOpen" target="_blank" rel="noopener">Open file ↗</a>
+        <button class="obtn" id="ovCopy">Copy link</button>
+      </div>
+    </aside>
+  </div>
+  <button class="ov-nav next" id="ovNext" aria-label="Next"><svg viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></svg></button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.1"></script>
+<script>
+const SUPABASE_URL="https://ezepjkidinqebmlnstdp.supabase.co";
+const SUPABASE_KEY="sb_publishable_Hq1b4fNYY1T73ymwKReczw_1B6ssJmK";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const BUCKET="personal-uploads";
+const publicUrl=path=>`${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+const $=id=>document.getElementById(id);
+
+const ICON={
+  image:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg>',
+  video:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>',
+  play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+  open:'<svg viewBox="0 0 24 24"><path d="M14 5h5v5"/><path d="M19 5 10 14"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg>',
+  trash:'<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13h10l1-13"/></svg>'
+};
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toast._t);
+  toast._t=setTimeout(()=>t.classList.remove("show"),2200);}
+function escapeHtml(s){return(s||"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
+function copy(text,msg){
+  const done=()=>toast(msg||"Link copied");
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done,()=>toast("Copy failed"));
+  else toast("Copy failed");
+}
+const fmtDate=iso=>new Date(iso).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+
+let session={repoId:null,handle:null,passcode:null,isOwner:false,isPublic:false};
+let ITEMS=[];
+
+async function boot(){
+  const params=new URLSearchParams(location.search);
+  const uHandle=params.get("u");
+  const saved=JSON.parse(sessionStorage.getItem("dsp_personal")||"null");
+
+  if(uHandle && !saved){
+    const{data,error}=await sb.rpc("get_personal_repo",{p_handle:uHandle});
+    const repo=data&&data[0];
+    if(error||!repo){$("gErr").textContent="No vault found for that handle.";$("gErr").style.display="block";return;}
+    if(repo.is_public){
+      session={repoId:repo.id,handle:repo.handle,passcode:null,isOwner:false,isPublic:true};
+      showApp();return;
+    }
+    $("gHandle").value=uHandle;
+    $("gate").querySelector("p").textContent="This vault is private. Enter its passcode to view it.";
+    return;
+  }
+  if(saved){session=saved;await refreshAndShow();return;}
+}
+
+$("gEnter").onclick=async()=>{
+  const handle=$("gHandle").value.trim();
+  const passcode=$("gPasscode").value;
+  const errEl=$("gErr");errEl.style.display="none";
+  if(!handle||!passcode){errEl.textContent="Enter a handle and passcode.";errEl.style.display="block";return;}
+  try{
+    const{data:existing}=await sb.rpc("get_personal_repo",{p_handle:handle});
+    const repo=existing&&existing[0];
+    if(!repo){
+      const{data:newId,error:createErr}=await sb.rpc("create_personal_repo",{p_handle:handle,p_passcode:passcode});
+      if(createErr){errEl.textContent="Couldn't create vault (handle may be taken).";errEl.style.display="block";return;}
+      session={repoId:newId,handle:handle.toLowerCase(),passcode,isOwner:true,isPublic:false};
+      toast("Vault created");
+    }else{
+      const{data:authId,error:authErr}=await sb.rpc("auth_personal_repo",{p_handle:handle,p_passcode:passcode});
+      if(authErr||!authId){errEl.textContent="Incorrect passcode for that handle.";errEl.style.display="block";return;}
+      session={repoId:authId,handle:handle.toLowerCase(),passcode,isOwner:true,isPublic:repo.is_public};
+    }
+    sessionStorage.setItem("dsp_personal",JSON.stringify(session));
+    await refreshAndShow();
+  }catch(e){errEl.textContent="Something went wrong — check your connection.";errEl.style.display="block";}
+};
+$("gPasscode").addEventListener("keydown",e=>{if(e.key==="Enter")$("gEnter").click();});
+
+function showApp(){
+  $("gate").style.display="none";
+  $("app").style.display="block";
+  $("whoBar").style.display="inline";
+  $("whoHandle").textContent=session.handle;
+  $("whoMode").textContent=session.isOwner?"· you":"· read-only";
+  $("topControls").style.display="flex";
+  const visBtn=$("visBtn"),dz=$("dropzone"),shareBox=$("shareBox");
+  if(session.isOwner){
+    visBtn.style.display="inline-flex";
+    visBtn.textContent=session.isPublic?"Public — make private":"Private — make public";
+    visBtn.classList.toggle("on",session.isPublic);
+    dz.style.display="block";
+    shareBox.style.display=session.isPublic?"flex":"none";
+    $("shareUrl").value=`${location.origin}${location.pathname}?u=${session.handle}`;
+  }else{
+    visBtn.style.display="none";dz.style.display="none";shareBox.style.display="none";
+  }
+  $("modeMeta").textContent=session.isOwner?"Owner · edits save automatically":"Read-only view";
+  loadItems();
+}
+
+$("visBtn").onclick=async()=>{
+  const next=!session.isPublic;
+  const{error}=await sb.rpc("set_personal_repo_visibility",{p_repo_id:session.repoId,p_passcode:session.passcode,p_is_public:next});
+  if(error){toast("Couldn't update visibility");return;}
+  session.isPublic=next;sessionStorage.setItem("dsp_personal",JSON.stringify(session));
+  showApp();
+};
+
+$("copyShare").onclick=()=>{const el=$("shareUrl");el.select();copy(el.value);};
+
+async function refreshAndShow(){
+  if(session.isOwner){
+    const{data,error}=await sb.rpc("auth_personal_repo",{p_handle:session.handle,p_passcode:session.passcode});
+    if(error||!data){sessionStorage.removeItem("dsp_personal");session={repoId:null,handle:null,passcode:null,isOwner:false,isPublic:false};return;}
+  }
+  showApp();
+}
+
+async function loadItems(){
+  const{data,error}=await sb.rpc("list_personal_items",{p_repo_id:session.repoId,p_passcode:session.passcode});
+  const grid=$("grid");grid.innerHTML="";
+  ITEMS=(error||!data)?[]:data;
+  if(!ITEMS.length){$("emptyMsg").style.display="block";return;}
+  $("emptyMsg").style.display="none";
+  ITEMS.forEach((item,i)=>grid.appendChild(itemCard(item,i)));
+}
+
+function mediaTag(item,cls){
+  const src=publicUrl(item.storage_path);
+  return item.kind==="video"
+    ?`<video src="${src}" muted playsinline preload="metadata" ${cls==="ov"?"controls":""}></video>`
+    :`<img src="${src}" ${cls==="ov"?"":'loading="lazy" decoding="async"'} alt="">`;
+}
+function itemCard(item,i){
+  const el=document.createElement("article");el.className="card";el.style.animationDelay=(i%12)*22+"ms";
+  const editable=session.isOwner;
+  el.innerHTML=`<div class="shotwrap">
+    <div class="shot">${mediaTag(item)}</div>
+    <div class="badges"><span class="badge">${item.kind==="video"?ICON.play+"video":"image"}</span></div>
+    <div class="acts">
+      <a class="act" href="${publicUrl(item.storage_path)}" target="_blank" rel="noopener" aria-label="Open file">${ICON.open}</a>
+      ${editable?`<button class="act danger del" aria-label="Delete">${ICON.trash}</button>`:""}
+    </div></div>
+  <div class="meta">
+    <span class="kindchip">${item.kind==="video"?ICON.video:ICON.image}</span>
+    <div class="mtxt">
+      ${editable
+        ?`<input class="ttl-in" value="${escapeHtml(item.title)}" placeholder="title">
+          <input class="tags-in" value="${escapeHtml((item.tags||[]).join(', '))}" placeholder="tags, comma, separated">`
+        :`<div class="mttl">${escapeHtml(item.title)||"Untitled"}</div>
+          <div class="msub">${item.kind}<span class="dot">·</span>${fmtDate(item.created_at)}</div>
+          ${(item.tags||[]).length?`<div class="mtags">${(item.tags||[]).map(t=>`<span>${escapeHtml(t)}</span>`).join("")}</div>`:""}`}
+    </div>
+  </div>`;
+  if(editable){
+    let t=null;
+    const save=()=>{clearTimeout(t);t=setTimeout(async()=>{
+      const title=el.querySelector(".ttl-in").value;
+      const tags=el.querySelector(".tags-in").value.split(",").map(s=>s.trim().toLowerCase()).filter(Boolean);
+      const{error}=await sb.rpc("update_personal_item",{p_item_id:item.id,p_passcode:session.passcode,p_title:title,p_tags:tags,p_note:item.note||""});
+      item.title=title;item.tags=tags;
+      toast(error?"Save failed":"Saved");
+    },500);};
+    el.querySelector(".ttl-in").oninput=save;
+    el.querySelector(".tags-in").oninput=save;
+    el.querySelector(".del").onclick=async e=>{
+      e.stopPropagation();
+      if(!confirm("Delete this item?"))return;
+      const{data:path,error}=await sb.rpc("delete_personal_item",{p_item_id:item.id,p_passcode:session.passcode});
+      if(error){toast("Delete failed");return;}
+      if(path)await sb.storage.from(BUCKET).remove([path]);
+      ITEMS=ITEMS.filter(x=>x.id!==item.id);el.remove();
+          if(!ITEMS.length)$("emptyMsg").style.display="block";
+      toast("Deleted");
+    };
+  }
+  el.querySelector(".shotwrap").onclick=e=>{if(e.target.closest("a,button"))return;openOverlay(item);};
+  return el;
+}
+
+/* ───────────── detail overlay ───────────── */
+let ovPos=0;
+const ovOpen=()=>$("ov").classList.contains("show");
+function openOverlay(item){
+  ovPos=Math.max(0,ITEMS.findIndex(x=>x.id===item.id));
+  paintOverlay();
+  $("ov").classList.add("show");$("ov").setAttribute("aria-hidden","false");
+  document.documentElement.style.overflow="hidden";
+}
+function closeOverlay(){
+  $("ov").classList.remove("show");$("ov").setAttribute("aria-hidden","true");
+  document.documentElement.style.overflow="";
+  $("ovMedia").innerHTML="";
+}
+function step(n){if(!ITEMS.length)return;ovPos=(ovPos+n+ITEMS.length)%ITEMS.length;paintOverlay();}
+function paintOverlay(){
+  const item=ITEMS[ovPos];if(!item)return;
+  $("ovMedia").innerHTML=mediaTag(item,"ov");
+  $("ovKind").textContent=item.kind;
+  $("ovTitle").textContent=item.title||"Untitled";
+  $("ovType").textContent=item.kind;
+  $("ovDate").textContent=fmtDate(item.created_at);
+  $("ovRepo").textContent="@"+(session.handle||"—");
+  $("ovTags").innerHTML=(item.tags||[]).map(t=>`<span>${escapeHtml(t)}</span>`).join("");
+  $("ovOpen").href=publicUrl(item.storage_path);
+  $("ovCopy").onclick=()=>copy(publicUrl(item.storage_path));
+}
+$("ovClose").onclick=closeOverlay;
+$("ovPrev").onclick=()=>step(-1);
+$("ovNext").onclick=()=>step(1);
+$("ov").onclick=e=>{if(e.target.id==="ov")closeOverlay();};
+document.addEventListener("keydown",e=>{
+  const typing=/^(INPUT|TEXTAREA)$/.test(e.target.tagName);
+  if(e.key==="Escape"){if(ovOpen())closeOverlay();else if(typing)e.target.blur();return;}
+  if(!ovOpen()||typing)return;
+  if(e.key==="ArrowRight"){e.preventDefault();step(1);}
+  if(e.key==="ArrowLeft"){e.preventDefault();step(-1);}
+});
+
+/* ───────────── upload ───────────── */
+const dz=$("dropzone"),fileInput=$("fileInput");
+dz.onclick=()=>fileInput.click();
+dz.ondragover=e=>{e.preventDefault();dz.classList.add("drag");};
+dz.ondragleave=()=>dz.classList.remove("drag");
+dz.ondrop=e=>{e.preventDefault();dz.classList.remove("drag");uploadFiles(e.dataTransfer.files);};
+fileInput.onchange=()=>uploadFiles(fileInput.files);
+
+async function uploadFiles(files){
+  for(const file of files){
+    if(!/^image\/|^video\//.test(file.type)){toast(`Skipped ${file.name} — not an image or video`);continue;}
+    if(file.size>52428800){toast(`Skipped ${file.name} — over 50MB`);continue;}
+    const kind=file.type.startsWith("video")?"video":"image";
+    const path=`${session.repoId}/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g,"_")}`;
+    toast(`Uploading ${file.name}…`);
+    const{error:upErr}=await sb.storage.from(BUCKET).upload(path,file,{contentType:file.type});
+    if(upErr){toast(`Upload failed: ${file.name}`);continue;}
+    const title=file.name.replace(/\.[^.]+$/,"");
+    const{error:addErr}=await sb.rpc("add_personal_item",{p_repo_id:session.repoId,p_passcode:session.passcode,p_kind:kind,p_storage_path:path,p_title:title,p_tags:[],p_note:""});
+    if(addErr){toast(`Couldn't save ${file.name}`);continue;}
+  }
+  loadItems();
+}
+
+boot();
+</script>
+<script type="module">
+import autoAnimate from "https://cdn.jsdelivr.net/npm/@formkit/auto-animate@0.8.4/index.min.js";
+const grid=document.getElementById("grid");
+if(grid)autoAnimate(grid,{duration:180});
+</script>
+</body>
+</html>
