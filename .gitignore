@@ -5,3 +5,7 @@ enrich.json
 __MACOSX/
 .venv/
 __pycache__/
+
+# fetched post media - images go to Supabase Storage, videos stay local only
+media/
+.env.local
