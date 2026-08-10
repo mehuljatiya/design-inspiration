@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Repository · Designspiration Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEEDE8;--paper-2:#E7E6E0;--card:#F6F5F1;--ink:#17171A;--muted:#6E6C64;
+  --faint:#9C998E;--line:rgba(23,23,26,.13);--line-2:rgba(23,23,26,.08);
+  --accent:#2C39FF;--accent-ink:#1A22B8;--accent-soft:rgba(44,57,255,.09);
+  --display:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}::selection{background:var(--accent);color:#fff}
+
+.masthead{border-bottom:1.5px solid var(--ink);padding:22px clamp(16px,4vw,44px) 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.wordmark h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.6vw,34px);letter-spacing:-.03em;line-height:.95;margin:0}
+.wordmark .sub{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent-soft);padding:4px 8px;border:1px solid var(--accent);}
+
+.wrap{max-width:1100px;margin:0 auto;padding:32px clamp(16px,4vw,44px) 80px}
+
+.gate{max-width:420px;margin:60px auto;padding:28px;background:var(--card);border:1.5px solid var(--ink)}
+.gate h2{font-family:var(--display);font-size:20px;margin:0 0 6px}
+.gate p{color:var(--muted);font-size:13px;margin:0 0 20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field input{width:100%;font-family:var(--mono);font-size:14px;padding:10px 12px;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);outline:none}
+.field input:focus{box-shadow:3px 3px 0 var(--accent)}
+.btn{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:11px 16px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;width:100%}
+.btn:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
+.btn.ghost{background:var(--card);color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+.err{color:#B3261E;font-size:12px;font-family:var(--mono);margin-top:10px;display:none}
+
+.toprow{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.who{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.who b{color:var(--ink)}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.toolbtn{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:9px 14px;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);cursor:pointer}
+.toolbtn:hover{background:var(--ink);color:var(--paper)}
+.toolbtn.on{background:var(--ink);color:var(--paper)}
+.sharebox{display:flex;gap:8px;align-items:center;font-family:var(--mono);font-size:12px;background:var(--card);border:1px solid var(--line);padding:6px 10px}
+.sharebox input{border:0;background:transparent;font-family:var(--mono);font-size:12px;width:220px;color:var(--muted)}
+
+.dropzone{border:1.5px dashed var(--faint);padding:30px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:24px;cursor:pointer}
+.dropzone.drag{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+.dropzone input{display:none}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.card{background:var(--card);border:1.5px solid var(--ink);display:flex;flex-direction:column}
+.card .media{aspect-ratio:4/3;background:var(--paper-2);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.card .media img,.card .media video{width:100%;height:100%;object-fit:cover;display:block}
+.card .body{padding:10px 12px}
+.card .ttl{font-size:13px;font-weight:600;margin:0 0 4px;word-break:break-word}
+.card input.ttl-in{width:100%;font-family:var(--sans);font-size:13px;font-weight:600;border:1px solid var(--line);padding:5px 7px;margin-bottom:5px;background:var(--paper)}
+.card input.tags-in{width:100%;font-family:var(--mono);font-size:11px;border:1px solid var(--line);padding:5px 7px;background:var(--paper);color:var(--muted)}
+.card .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.card .tags span{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--paper);border:1px solid var(--line);padding:2px 6px}
+.card .row{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.del{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#B3261E;background:transparent;border:0;cursor:pointer;padding:0}
+.empty{color:var(--muted);font-family:var(--mono);font-size:12px;padding:40px 0;text-align:center}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:12px;padding:9px 16px;opacity:0;transition:.2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="wordmark"><h1>My Repository</h1><div class="sub">Personal screens &amp; videos · experimental</div></div>
+  <span class="badge">Preview build</span>
+</div>
+
+<div class="wrap">
+  <div id="gate" class="gate">
+    <h2>Enter your repository</h2>
+    <p>Pick a handle and a passcode. First time using this handle creates it; returning just needs the same passcode.</p>
+    <div class="field"><label>Handle</label><input id="gHandle" placeholder="e.g. mehul" autocomplete="off"></div>
+    <div class="field"><label>Passcode</label><input id="gPasscode" type="password" placeholder="your personal passcode"></div>
+    <button class="btn" id="gEnter">Enter / Create</button>
+    <div class="err" id="gErr"></div>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="toprow">
+      <div class="who">Repository: <b id="whoHandle"></b> <span id="whoMode"></span></div>
+      <div class="controls">
+        <button class="toolbtn" id="visBtn"></button>
+        <div class="sharebox" id="shareBox" style="display:none">
+          <span>Share:</span><input id="shareUrl" readonly>
+          <button class="toolbtn" id="copyShare" style="padding:4px 8px">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dropzone" id="dropzone" style="display:none">
+      Drop images or videos here, or click to choose files (max 50MB each)
+      <input type="file" id="fileInput" multiple accept="image/*,video/*">
+    </div>
+
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="emptyMsg" style="display:none">No items yet.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.1"></script>
+<script>
+const SUPABASE_URL="https://ezepjkidinqebmlnstdp.supabase.co";
+const SUPABASE_KEY="sb_publishable_Hq1b4fNYY1T73ymwKReczw_1B6ssJmK";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const BUCKET="personal-uploads";
+const publicUrl=path=>`${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200);}
+function escapeHtml(s){return(s||"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
+
+let session={repoId:null,handle:null,passcode:null,isOwner:false,isPublic:false};
+
+async function boot(){
+  const params=new URLSearchParams(location.search);
+  const uHandle=params.get("u");
+  const saved=JSON.parse(sessionStorage.getItem("dsp_personal")||"null");
+
+  if(uHandle && !saved){
+    const{data,error}=await sb.rpc("get_personal_repo",{p_handle:uHandle});
+    const repo=data&&data[0];
+    if(error||!repo){document.getElementById("gErr").textContent="No repository found for that handle.";document.getElementById("gErr").style.display="block";return;}
+    if(repo.is_public){
+      session={repoId:repo.id,handle:repo.handle,passcode:null,isOwner:false,isPublic:true};
+      showApp();return;
+    }
+    document.getElementById("gHandle").value=uHandle;
+    document.getElementById("gate").querySelector("p").textContent="This repository is private. Enter its passcode to view it.";
+    return;
+  }
+  if(saved){session=saved;await refreshAndShow();return;}
+}
+
+document.getElementById("gEnter").onclick=async()=>{
+  const handle=document.getElementById("gHandle").value.trim();
+  const passcode=document.getElementById("gPasscode").value;
+  const errEl=document.getElementById("gErr");errEl.style.display="none";
+  if(!handle||!passcode){errEl.textContent="Enter a handle and passcode.";errEl.style.display="block";return;}
+  try{
+    const{data:existing}=await sb.rpc("get_personal_repo",{p_handle:handle});
+    const repo=existing&&existing[0];
+    if(!repo){
+      const{data:newId,error:createErr}=await sb.rpc("create_personal_repo",{p_handle:handle,p_passcode:passcode});
+      if(createErr){errEl.textContent="Couldn't create repository (handle may be taken).";errEl.style.display="block";return;}
+      session={repoId:newId,handle:handle.toLowerCase(),passcode,isOwner:true,isPublic:false};
+      toast("Repository created");
+    }else{
+      const{data:authId,error:authErr}=await sb.rpc("auth_personal_repo",{p_handle:handle,p_passcode:passcode});
+      if(authErr||!authId){errEl.textContent="Incorrect passcode for that handle.";errEl.style.display="block";return;}
+      session={repoId:authId,handle:handle.toLowerCase(),passcode,isOwner:true,isPublic:repo.is_public};
+    }
+    sessionStorage.setItem("dsp_personal",JSON.stringify(session));
+    await refreshAndShow();
+  }catch(e){errEl.textContent="Something went wrong — check your connection.";errEl.style.display="block";}
+};
+
+function showApp(){
+  document.getElementById("gate").style.display="none";
+  document.getElementById("app").style.display="block";
+  document.getElementById("whoHandle").textContent=session.handle;
+  document.getElementById("whoMode").textContent=session.isOwner?"(you)":"(read-only)";
+  const visBtn=document.getElementById("visBtn");
+  const dz=document.getElementById("dropzone");
+  const shareBox=document.getElementById("shareBox");
+  if(session.isOwner){
+    visBtn.style.display="inline-block";
+    visBtn.textContent=session.isPublic?"Public — click to make private":"Private — click to make public";
+    visBtn.classList.toggle("on",session.isPublic);
+    dz.style.display="block";
+    shareBox.style.display=session.isPublic?"flex":"none";
+    const url=`${location.origin}${location.pathname}?u=${session.handle}`;
+    document.getElementById("shareUrl").value=url;
+  }else{
+    visBtn.style.display="none";dz.style.display="none";shareBox.style.display="none";
+  }
+  loadItems();
+}
+
+document.getElementById("visBtn").onclick=async()=>{
+  const next=!session.isPublic;
+  const{error}=await sb.rpc("set_personal_repo_visibility",{p_repo_id:session.repoId,p_passcode:session.passcode,p_is_public:next});
+  if(error){toast("Couldn't update visibility");return;}
+  session.isPublic=next;sessionStorage.setItem("dsp_personal",JSON.stringify(session));
+  showApp();
+};
+
+document.getElementById("copyShare").onclick=()=>{
+  const el=document.getElementById("shareUrl");el.select();
+  navigator.clipboard.writeText(el.value).then(()=>toast("Link copied"),()=>toast("Copy failed"));
+};
+
+async function refreshAndShow(){
+  if(session.isOwner){
+    const{data,error}=await sb.rpc("auth_personal_repo",{p_handle:session.handle,p_passcode:session.passcode});
+    if(error||!data){sessionStorage.removeItem("dsp_personal");session={repoId:null,handle:null,passcode:null,isOwner:false,isPublic:false};return;}
+  }
+  showApp();
+}
+
+async function loadItems(){
+  const{data,error}=await sb.rpc("list_personal_items",{p_repo_id:session.repoId,p_passcode:session.passcode});
+  const grid=document.getElementById("grid");grid.innerHTML="";
+  if(error||!data||!data.length){document.getElementById("emptyMsg").style.display="block";return;}
+  document.getElementById("emptyMsg").style.display="none";
+  data.forEach(item=>grid.appendChild(itemCard(item)));
+}
+
+function itemCard(item){
+  const el=document.createElement("div");el.className="card";
+  const media=item.kind==="video"
+    ?`<video src="${publicUrl(item.storage_path)}" muted playsinline></video>`
+    :`<img src="${publicUrl(item.storage_path)}" loading="lazy" alt="">`;
+  const editable=session.isOwner;
+  el.innerHTML=`<div class="media">${media}</div>
+    <div class="body">
+      ${editable
+        ?`<input class="ttl-in" value="${escapeHtml(item.title)}" placeholder="title">
+           <input class="tags-in" value="${escapeHtml((item.tags||[]).join(', '))}" placeholder="tags, comma, separated">`
+        :`<div class="ttl">${escapeHtml(item.title)||"Untitled"}</div>
+           <div class="tags">${(item.tags||[]).map(t=>`<span>${escapeHtml(t)}</span>`).join("")}</div>`}
+      ${editable?`<div class="row"><span></span><button class="del">Delete</button></div>`:""}
+    </div>`;
+  if(editable){
+    let t=null;
+    const save=()=>{clearTimeout(t);t=setTimeout(async()=>{
+      const title=el.querySelector(".ttl-in").value;
+      const tags=el.querySelector(".tags-in").value.split(",").map(s=>s.trim().toLowerCase()).filter(Boolean);
+      const{error}=await sb.rpc("update_personal_item",{p_item_id:item.id,p_passcode:session.passcode,p_title:title,p_tags:tags,p_note:item.note||""});
+      toast(error?"Save failed":"Saved");
+    },500);};
+    el.querySelector(".ttl-in").oninput=save;
+    el.querySelector(".tags-in").oninput=save;
+    el.querySelector(".del").onclick=async()=>{
+      if(!confirm("Delete this item?"))return;
+      const{data:path,error}=await sb.rpc("delete_personal_item",{p_item_id:item.id,p_passcode:session.passcode});
+      if(error){toast("Delete failed");return;}
+      if(path)await sb.storage.from(BUCKET).remove([path]);
+      el.remove();toast("Deleted");
+    };
+  }
+  return el;
+}
+
+const dz=document.getElementById("dropzone");
+const fileInput=document.getElementById("fileInput");
+dz.onclick=()=>fileInput.click();
+dz.ondragover=e=>{e.preventDefault();dz.classList.add("drag");};
+dz.ondragleave=()=>dz.classList.remove("drag");
+dz.ondrop=e=>{e.preventDefault();dz.classList.remove("drag");uploadFiles(e.dataTransfer.files);};
+fileInput.onchange=()=>uploadFiles(fileInput.files);
+
+async function uploadFiles(files){
+  for(const file of files){
+    if(!/^image\/|^video\//.test(file.type)){toast(`Skipped ${file.name} — not an image or video`);continue;}
+    if(file.size>52428800){toast(`Skipped ${file.name} — over 50MB`);continue;}
+    const kind=file.type.startsWith("video")?"video":"image";
+    const path=`${session.repoId}/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g,"_")}`;
+    toast(`Uploading ${file.name}…`);
+    const{error:upErr}=await sb.storage.from(BUCKET).upload(path,file,{contentType:file.type});
+    if(upErr){toast(`Upload failed: ${file.name}`);continue;}
+    const title=file.name.replace(/\.[^.]+$/,"");
+    const{error:addErr}=await sb.rpc("add_personal_item",{p_repo_id:session.repoId,p_passcode:session.passcode,p_kind:kind,p_storage_path:path,p_title:title,p_tags:[],p_note:""});
+    if(addErr){toast(`Couldn't save ${file.name}`);continue;}
+  }
+  loadItems();
+}
+
+boot();
+</script>
+</body>
+</html>
