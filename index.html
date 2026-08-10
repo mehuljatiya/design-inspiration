@@ -128,6 +128,25 @@ a{color:inherit;text-decoration:none}::selection{background:var(--accent);color:
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:12px;padding:11px 18px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 footer.foot{border-top:1.5px solid var(--ink);padding:20px clamp(16px,4vw,44px);font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--faint);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+/* lightbox preview */
+.lightbox{position:fixed;inset:0;background:rgba(23,23,26,.72);display:none;align-items:center;justify-content:center;padding:24px;z-index:200}
+.lightbox.show{display:flex}
+.lb-card{position:relative;background:var(--card);border:1.5px solid var(--ink);max-width:640px;width:100%;max-height:90vh;overflow:auto;box-shadow:8px 10px 0 rgba(23,23,26,.3)}
+.lb-media{width:100%;aspect-ratio:16/10;background:var(--paper-2);overflow:hidden}
+.lb-media img{width:100%;height:100%;object-fit:cover;display:block}
+.lb-body{padding:20px 22px 22px}
+.lb-close{position:absolute;top:10px;right:10px;width:30px;height:30px;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);font-family:var(--mono);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.lb-close:hover{background:var(--ink);color:var(--paper)}
+.lb-cat{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;margin-bottom:9px;color:var(--muted)}
+.lb-cat .d{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.lb-title{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.02em;margin:0 0 6px;line-height:1.2}
+.lb-sub{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin:0 0 10px}
+.lb-note{color:var(--muted);font-size:13.5px;font-style:italic;margin:0 0 14px}
+.lb-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.lb-tags span{font-family:var(--mono);font-size:10.5px;padding:3px 8px;border:1px solid var(--line);color:var(--muted)}
+.lb-open{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:11px 16px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer}
+.lb-open:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -172,8 +191,23 @@ footer.foot{border-top:1.5px solid var(--ink);padding:20px clamp(16px,4vw,44px);
   </main>
 </div>
 
-<footer class="foot"><span>Built from #designspiration · Nov 2024 – Jul 2026</span><span>Tap any card to open · click a tag to filter</span></footer>
+<footer class="foot"><span>Built from #designspiration · Nov 2024 – Jul 2026</span><span>Tap any card to preview · click a tag to filter</span></footer>
 <div class="toast" id="toast"></div>
+
+<div class="lightbox" id="lightbox">
+  <div class="lb-card" role="dialog" aria-modal="true">
+    <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+    <div class="lb-media"><img id="lbImg" alt="" onerror="this.style.display='none'"></div>
+    <div class="lb-body">
+      <span class="lb-cat"><span class="d" id="lbCatDot"></span><span id="lbCatName"></span></span>
+      <h3 class="lb-title" id="lbTitle"></h3>
+      <p class="lb-sub" id="lbSub"></p>
+      <p class="lb-note" id="lbNote" style="display:none"></p>
+      <div class="lb-tags" id="lbTags"></div>
+      <a class="lb-open" id="lbOpen" target="_blank" rel="noopener">Open link in new tab ↗</a>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.1"></script>
 <script>
@@ -244,19 +278,38 @@ function tagsHTML(d){return d.g.map(t=>`<button class="tg${t==='review'?' review
 function wireCard(el){
   el.querySelectorAll(".tg").forEach(t=>t.onclick=e=>{e.stopPropagation();const g=t.dataset.tag;state.tags.has(g)?state.tags.delete(g):state.tags.add(g);render();});
   el.querySelectorAll("[data-cat]").forEach(c=>c.onclick=e=>{e.stopPropagation();const cc=c.dataset.cat;state.cats.has(cc)?state.cats.delete(cc):state.cats.add(cc);render();});
+  el.querySelectorAll(".lb-trigger").forEach(a=>{a.onclick=e=>{
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+    e.preventDefault();openLightbox(DATA[+a.dataset.i]);};});
 }
+function openLightbox(d){
+  const img=document.getElementById("lbImg");img.style.display="block";img.src=THUMB_DIR+d.thumb;
+  document.getElementById("lbCatDot").style.background=catColor(d.c);
+  document.getElementById("lbCatName").textContent=d.c;
+  document.getElementById("lbTitle").textContent=d.t;
+  document.getElementById("lbSub").textContent=domainOf(d.u)+" · "+d.d;
+  const noteEl=document.getElementById("lbNote");
+  if(d.n){noteEl.textContent="“"+d.n+"”";noteEl.style.display="block";}else{noteEl.style.display="none";}
+  document.getElementById("lbTags").innerHTML=d.g.map(t=>`<span>${escapeHtml(t)}</span>`).join("");
+  document.getElementById("lbOpen").href=d.u;
+  document.getElementById("lightbox").classList.add("show");
+}
+function closeLightbox(){document.getElementById("lightbox").classList.remove("show");}
+document.getElementById("lbClose").onclick=closeLightbox;
+document.getElementById("lightbox").onclick=e=>{if(e.target.id==="lightbox")closeLightbox();};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeLightbox();});
 function listEntry(d,idx){const el=document.createElement("div");el.className="entry";const col=catColor(d.c);
   el.innerHTML=`<div class="idx">${String(idx).padStart(3,"0")}</div>
-    <a class="rowthumb-wrap" href="${d.u}" target="_blank" rel="noopener">${thumbHTML(d,"rowthumb")}</a>
-    <div class="body"><div class="ttl-row">${state.edit?`<div style="flex:1">${editFields(d)}</div>`:`<a class="ttl" href="${d.u}" target="_blank" rel="noopener">${escapeHtml(d.t)}</a><span class="dom">${domainOf(d.u)}</span>`}</div>
+    <a class="rowthumb-wrap lb-trigger" data-i="${idxOf(d)}" href="${d.u}" target="_blank" rel="noopener">${thumbHTML(d,"rowthumb")}</a>
+    <div class="body"><div class="ttl-row">${state.edit?`<div style="flex:1">${editFields(d)}</div>`:`<a class="ttl lb-trigger" data-i="${idxOf(d)}" href="${d.u}" target="_blank" rel="noopener">${escapeHtml(d.t)}</a><span class="dom">${domainOf(d.u)}</span>`}</div>
     ${d.n?`<div class="note">“${escapeHtml(d.n)}”</div>`:""}
     ${state.edit?"":`<div class="tags"><span class="catflag" data-cat="${d.c}"><span class="d" style="background:${col}"></span>${d.c}</span>${tagsHTML(d)}</div>`}</div>
     <div class="meta">${d.d}</div>`;
   if(edited.has(idxOf(d)))el.classList.add("edited");wireCard(el);if(state.edit)wireEdits(el);return el;}
 function galleryCard(d){const el=document.createElement("div");el.className="gcard";const col=catColor(d.c);
-  el.innerHTML=`<a href="${d.u}" target="_blank" rel="noopener">${thumbHTML(d,"gthumb")}</a>
+  el.innerHTML=`<a class="lb-trigger" data-i="${idxOf(d)}" href="${d.u}" target="_blank" rel="noopener">${thumbHTML(d,"gthumb")}</a>
     <div class="gbody"><div class="gtop"><span class="gcatdot" data-cat="${d.c}" style="background:${col}"></span><span class="gcat" data-cat="${d.c}">${d.c}</span></div>
-    ${state.edit?`<div class="editwrap">${editFields(d)}</div>`:`<a class="gttl" href="${d.u}" target="_blank" rel="noopener">${escapeHtml(d.t)}</a>`}
+    ${state.edit?`<div class="editwrap">${editFields(d)}</div>`:`<a class="gttl lb-trigger" data-i="${idxOf(d)}" href="${d.u}" target="_blank" rel="noopener">${escapeHtml(d.t)}</a>`}
     ${d.n?`<div class="note" style="font-size:12px;margin:0">“${escapeHtml(d.n)}”</div>`:""}
     ${state.edit?"":`<div class="gtags">${tagsHTML(d)}</div>`}<div class="gdom">${domainOf(d.u)} · ${d.d}</div></div>`;
   if(edited.has(idxOf(d)))el.classList.add("edited");wireCard(el);if(state.edit)wireEdits(el);return el;}

@@ -69,6 +69,21 @@ a{color:inherit;text-decoration:none}::selection{background:var(--accent);color:
 .empty{color:var(--muted);font-family:var(--mono);font-size:12px;padding:40px 0;text-align:center}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:12px;padding:9px 16px;opacity:0;transition:.2s;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.lightbox{position:fixed;inset:0;background:rgba(23,23,26,.72);display:none;align-items:center;justify-content:center;padding:24px;z-index:200}
+.lightbox.show{display:flex}
+.lb-card{position:relative;background:var(--card);border:1.5px solid var(--ink);max-width:640px;width:100%;max-height:90vh;overflow:auto;box-shadow:8px 10px 0 rgba(23,23,26,.3)}
+.lb-media{width:100%;aspect-ratio:16/10;background:var(--paper-2);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.lb-media img,.lb-media video{width:100%;height:100%;object-fit:cover;display:block}
+.lb-body{padding:20px 22px 22px}
+.lb-close{position:absolute;top:10px;right:10px;width:30px;height:30px;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);font-family:var(--mono);font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.lb-close:hover{background:var(--ink);color:var(--paper)}
+.lb-title{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.02em;margin:0 0 6px;line-height:1.2}
+.lb-sub{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin:0 0 14px;text-transform:uppercase;letter-spacing:.08em}
+.lb-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.lb-tags span{font-family:var(--mono);font-size:10.5px;padding:3px 8px;border:1px solid var(--line);color:var(--muted)}
+.lb-open{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:11px 16px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer}
+.lb-open:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
 </style>
 </head>
 <body>
@@ -111,6 +126,19 @@ a{color:inherit;text-decoration:none}::selection{background:var(--accent);color:
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="lightbox" id="lightbox">
+  <div class="lb-card" role="dialog" aria-modal="true">
+    <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+    <div class="lb-media" id="lbMedia"></div>
+    <div class="lb-body">
+      <h3 class="lb-title" id="lbTitle"></h3>
+      <p class="lb-sub" id="lbSub"></p>
+      <div class="lb-tags" id="lbTags"></div>
+      <a class="lb-open" id="lbOpen" target="_blank" rel="noopener">Open file in new tab ↗</a>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.1"></script>
 <script>
@@ -225,7 +253,7 @@ function itemCard(item){
     ?`<video src="${publicUrl(item.storage_path)}" muted playsinline></video>`
     :`<img src="${publicUrl(item.storage_path)}" loading="lazy" alt="">`;
   const editable=session.isOwner;
-  el.innerHTML=`<div class="media">${media}</div>
+  el.innerHTML=`<div class="media" style="cursor:pointer">${media}</div>
     <div class="body">
       ${editable
         ?`<input class="ttl-in" value="${escapeHtml(item.title)}" placeholder="title">
@@ -252,8 +280,28 @@ function itemCard(item){
       el.remove();toast("Deleted");
     };
   }
+  el.querySelector(".media").onclick=()=>openLightbox(item);
   return el;
 }
+
+function openLightbox(item){
+  const lbMedia=document.getElementById("lbMedia");
+  lbMedia.innerHTML=item.kind==="video"
+    ?`<video src="${publicUrl(item.storage_path)}" controls playsinline></video>`
+    :`<img src="${publicUrl(item.storage_path)}" alt="">`;
+  document.getElementById("lbTitle").textContent=item.title||"Untitled";
+  document.getElementById("lbSub").textContent=item.kind+" · added "+new Date(item.created_at).toLocaleDateString();
+  document.getElementById("lbTags").innerHTML=(item.tags||[]).map(t=>`<span>${escapeHtml(t)}</span>`).join("");
+  document.getElementById("lbOpen").href=publicUrl(item.storage_path);
+  document.getElementById("lightbox").classList.add("show");
+}
+function closeLightbox(){
+  document.getElementById("lightbox").classList.remove("show");
+  document.getElementById("lbMedia").innerHTML="";
+}
+document.getElementById("lbClose").onclick=closeLightbox;
+document.getElementById("lightbox").onclick=e=>{if(e.target.id==="lightbox")closeLightbox();};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeLightbox();});
 
 const dz=document.getElementById("dropzone");
 const fileInput=document.getElementById("fileInput");
